@@ -10,6 +10,7 @@ langchain-community = "*"
 langchainhub = "*"
 black = "*"
 langchain-ollama = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
