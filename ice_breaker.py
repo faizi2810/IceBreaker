@@ -5,13 +5,15 @@ from langchain_ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 
+from agents.linkedin_lookup_agent import lookup
 from third_parties.linkedin import scrape_linkedin_profile
 
 
 load_dotenv()
 
-if __name__ == '__main__':
-    print(os.environ.get('OPENAI_API_KEY'))
+def ice_break_with(name: str) -> str:
+    linkedin_url = lookup(name)
+    linkedin_data = scrape_linkedin_profile(linkedin_profile_url=linkedin_url, mock=True)
 
 
     summary_prompt = """
@@ -26,8 +28,14 @@ if __name__ == '__main__':
 
     chain = summary_prompt_template | llm | StrOutputParser()
 
-    linkedin_data = scrape_linkedin_profile("https://www.linkedin.com/in/muhammad-faizan-ahmad/", True)
-
     res = chain.invoke(input={"information": linkedin_data})
 
     print(res)
+
+
+if __name__ == '__main__':
+    print(os.environ.get('OPENAI_API_KEY'))
+    ice_break_with("Eden Marco Udemy")
+
+    
+    
