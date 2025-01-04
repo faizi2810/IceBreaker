@@ -11,6 +11,7 @@ langchainhub = "*"
 black = "*"
 langchain-ollama = "*"
 python-dotenv = "*"
+tweepy = "*"
 
 [dev-packages]
 

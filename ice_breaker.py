@@ -4,22 +4,30 @@ from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
-
-from agents.linkedin_lookup_agent import lookup
+from agents.linkedin_lookup_agent import lookup as likedin_lookup_agent
 from third_parties.linkedin import scrape_linkedin_profile
+from third_parties.twitter import scrape_user_tweets
+from agents.twitter_lookup_agent import lookup as twitter_lookup_agent
 
 
 load_dotenv()
 
 def ice_break_with(name: str) -> str:
-    linkedin_url = lookup(name)
+    linkedin_url = likedin_lookup_agent(name)
     linkedin_data = scrape_linkedin_profile(linkedin_profile_url=linkedin_url, mock=True)
+
+    twitter_username = twitter_lookup_agent(name)
+    tweets = scrape_user_tweets(username=twitter_username, mock=True)
 
 
     summary_prompt = """
-    give the linkedin information {information} about a person from I want you to create:
+    give the information about a person from Linkedin {information} and twitter posts {twitter_posts} I want you to create:
     1. a short summary
-    2. two interesting facts about them"""
+    2. two interesting facts about them
+    
+    Use both information from Linkedin and Twitter.
+    """
+    
 
     summary_prompt_template = PromptTemplate(input_variables=["information"], template=summary_prompt)
 
@@ -28,7 +36,7 @@ def ice_break_with(name: str) -> str:
 
     chain = summary_prompt_template | llm | StrOutputParser()
 
-    res = chain.invoke(input={"information": linkedin_data})
+    res = chain.invoke(input={"information": linkedin_data, "twitter_posts": tweets})
 
     print(res)
 
