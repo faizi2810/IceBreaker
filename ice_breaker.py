@@ -8,7 +8,7 @@ from agents.linkedin_lookup_agent import lookup as likedin_lookup_agent
 from third_parties.linkedin import scrape_linkedin_profile
 from third_parties.twitter import scrape_user_tweets
 from agents.twitter_lookup_agent import lookup as twitter_lookup_agent
-from output_parsers import summaryOutputParser
+from output_parsers import Summary, summaryOutputParser
 
 
 load_dotenv()
@@ -43,9 +43,9 @@ def ice_break_with(name: str) -> str:
     # chain = summary_prompt_template | llm | StrOutputParser
     chain = summary_prompt_template | llm | summaryOutputParser
 
-    res = chain.invoke(input={"information": linkedin_data, "twitter_posts": tweets})
+    res: Summary = chain.invoke(input={"information": linkedin_data, "twitter_posts": tweets})
 
-    print(res)
+    return res, linkedin_data.get("profile_pic_url")
 
 
 if __name__ == '__main__':
