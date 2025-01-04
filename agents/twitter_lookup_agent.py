@@ -11,19 +11,18 @@ from langchain_core.tools import Tool
 from tools.tools import get_profile_url_tavily
 
 
-
 def lookup(name:str)-> str:
     llm = ChatOllama(model="llama3")
-    template="""given the full name {name_of_person} i want you to get it me a link to their linkedin profile page.
-    Your answer should only contain a url"""
+    template="""given the full name {name_of_person} i want you to find a link to their twitter profile page and extract from it their username.
+    Your answer should only be person's username"""
     
     prompt_template = PromptTemplate(inputVariables={"name_of_person"}, template=template)
 
     tools_for_agent = [
         Tool(
-            name= "Crawl Google 4 linkedin profile page",
+            name= "Crawl Google 4 Twitter profile page",
             func=get_profile_url_tavily,
-            description="Useful for when you need to get the Linkedin profile page"
+            description="Useful for when you need to get the Twitter profile page"
         )
     ]
 
@@ -40,7 +39,3 @@ def lookup(name:str)-> str:
 
     linkedin_profile_url = result["output"]
     return linkedin_profile_url
-
-if __name__ == "__main__":
-    linkedin_profile_url = lookup("Roshaan Ahmed Siddiqui Techlogix UET lahore")
-    print(linkedin_profile_url)
