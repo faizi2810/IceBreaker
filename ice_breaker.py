@@ -8,6 +8,7 @@ from agents.linkedin_lookup_agent import lookup as likedin_lookup_agent
 from third_parties.linkedin import scrape_linkedin_profile
 from third_parties.twitter import scrape_user_tweets
 from agents.twitter_lookup_agent import lookup as twitter_lookup_agent
+from output_parsers import summaryOutputParser
 
 
 load_dotenv()
@@ -26,15 +27,21 @@ def ice_break_with(name: str) -> str:
     2. two interesting facts about them
     
     Use both information from Linkedin and Twitter.
+    \n{format_instructions}
     """
     
 
-    summary_prompt_template = PromptTemplate(input_variables=["information"], template=summary_prompt)
+    summary_prompt_template = PromptTemplate(input_variables=["information"],
+                                            template=summary_prompt,
+                                            partial_variables= {
+                                                "format_instructions": summaryOutputParser.get_format_instructions()
+                                            })
 
     # llm = ChatOpenAI(temperature=0, api_key=os.environ.get('OPENAI_API_KEY'), model="gtp-3.5-turbo")
     llm = ChatOllama(model="llama3")
 
-    chain = summary_prompt_template | llm | StrOutputParser()
+    # chain = summary_prompt_template | llm | StrOutputParser
+    chain = summary_prompt_template | llm | summaryOutputParser
 
     res = chain.invoke(input={"information": linkedin_data, "twitter_posts": tweets})
 
