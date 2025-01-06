@@ -1,4 +1,3 @@
-# icebreaker
-Ice breaker built using langchain
-Implemented two agents one for finding users on LinkedIn and second one for finding users on Twitter
-Implemented a tool
+Icebreaker Application Built Using LangChain
+Developed two agents: one for locating users on LinkedIn and another for finding users on Twitter.
+Created a custom tool to support and enhance the functionality of these agents.
